@@ -1,0 +1,7 @@
+*.dmp
+*.lst
+*.map
+*.mex
+
+.DS_STORE
+MarieSim4rhEdition/

@@ -1,0 +1,59 @@
+// Factorial
+// Write a MARIE assembly program that accepts one integer input, then outputs a factorial product.
+// Example:
+// Input: 5
+// Program: 1 x 2 x 3 x 4 x 5
+// Output: 120
+//
+// Example:
+// Input: 6
+// Program: 1 x 2 x 3 x 4 x 5 x 6
+// Output: 720
+
+Input
+Store F
+Store Result
+
+MainLoop, Load Result
+    Store Y
+    Load F
+    Subt One
+    Store X
+    Store F
+    JnS Multiply
+    Store Result
+    Load F
+    Subt One
+    // continue loop while F > 1
+    Skipcond 800
+    Jump Exit
+    Jump MainLoop
+
+Exit, Load Result
+Output
+Halt
+
+// Multiplication (repeated addition) of X * Y, using a temporary accumulator
+Multiply, Hex 0 // Store return address
+    Clear // ensure AC register is reset before proceeding
+    Store Tmp // ensure Tmp accumulator var is reset before proceeding
+
+    // X is positive, add Y to an accumulator variable (Tmp)
+    MultiplyLoop, Load Tmp
+        Add Y
+        Store Tmp
+        Load X
+        Subt One
+        Store X
+        Skipcond 400 // If AC = 0, break loop
+        Jump MultiplyLoop
+
+    Load Tmp
+    JumpI Multiply // jump back to the return address stored when ending the Multiply subroutine
+
+Result, Dec 1
+Tmp, Dec 0
+One, Dec 1
+F, Dec 0
+X, Dec 0
+Y, Dec 0
