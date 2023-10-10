@@ -1,0 +1,124 @@
+// Write a MARIE assembly program to do the following
+// The user input 10 numbers: 10 20 30 40 50 60 70 80 90 100
+
+// Run MainLoop 10 times
+MainLoop, Input
+Store CurrentInput
+// Keep track of the MIN value seen
+JnS TrackMin
+// Keep track of the MAX value seen
+JnS TrackMax
+
+// Increment N
+Load N
+Add One
+Store N
+
+// Add CurrentInput to running total (Sum)
+Load CurrentInput
+Add Sum
+Store Sum
+
+// Calculate running average based on Sum / N
+Jns CalcAvg
+
+// print Min, Max, Sum, AvgQ, AvgR
+Load Min
+Output
+Load Max
+Output
+Load Sum
+Output
+Load AvgQ
+Output
+Load AvgR
+Output
+
+// continue looping 10 times, until MainLoopTmp = 0
+Load MainLoopTmp
+Subt One
+Store MainLoopTmp
+Skipcond 400
+Jump MainLoop
+
+Exit, Halt
+
+TrackMin, Hex 0 // store return address
+Clear
+// if Min is zero, then CurrentInput is the new Min
+Load Min
+// if CurrentInput - Min is zero, then CurrentInput is the new Min
+Skipcond 400
+Jump CompareMin // if Min is not Zero, compare Min with CurrentInput
+Jump StoreMin
+
+CompareMin, Load CurrentInput
+Subt Min
+
+// if CurrentInput - Min is negative, then CurrentInput is the new Min
+Skipcond 000 // if AC is negative, skip next line
+JumpI TrackMin // exit subroutine if AC >= 0
+// below this point, AC is negative
+StoreMin, Load CurrentInput
+Store Min
+JumpI TrackMin
+
+TrackMax, Hex 0 // store return address
+Clear
+Load CurrentInput
+Subt Max
+// if CurrentInput - Max is positive, then CurrentInput is the new Max
+Skipcond 800 // if AC is positive, skip next line
+JumpI TrackMax // exit subroutine if AC <= 0
+// below this point, AC is positive
+Load CurrentInput
+Store Max
+JumpI TrackMax
+
+// 6 / 2 is the same as 6 - 2 - 2 - 2 = 0 (2 divides into 6 3 times, with 0 remainder)
+// 7 /2 is the same has 6 - 2 - 2 - 2 = 1 (2 divides into 6 3 times, with 1 remainder)
+
+CalcAvg, Hex 0 // store return address
+Clear
+Store AvgR // Reset AvgQ, AvgR variables
+Store AvgQ
+Load Sum // Reset Sum as AvgTmpSum, which is mutated by the SubtLoop routine
+Store AvgTmpSum
+
+// divide Sum / N by subtracting
+    SubtLoop, Load AvgTmpSum
+    // If AvgTmpSum - N is >= 0, increment AvgQ by 1
+    Subt N
+    Skipcond 000
+    Jump StoreAvgR // if AvgTmpSum - N is negative, store AvgTmpSum as the remainder
+    // Store tmp sum
+    Store AvgTmpSum
+    // Increment AvgQ by 1
+    Load AvgQ
+    Add One
+    Store AvgQ
+    // if AvgTmpSum is 0, exit
+    Load AvgTmpSum
+    Skipcond 800 // skip next line if AvgTmpSum is positive (implies AvgTmpSum is zero)
+    JumpI CalcAvg
+    // Continue looping until one of the exit conditions is met
+    Jump SubtLoop
+
+    StoreAvgR, Load AvgTmpSum
+    Store AvgR
+    JumpI CalcAvg
+
+
+Min, Dec 0 // Keep track of the MIN value
+Max, Dec 0 // Keep track of the MAX value
+AvgTmpSum, Dec 0 // 
+AvgQ, Dec 0 // Store the avg (quotient) of all seen inputs
+AvgR, Dec 0 // Store the avg (remainder)
+
+Sum, Dec 0 // Store the sum of all seen inputs
+N, Dec 0 // Store the number of seen inputs
+
+CurrentInput, Dec 0
+Zero, Dec 0
+One, Dec 1
+MainLoopTmp, Dec 10
