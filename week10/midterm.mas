@@ -90,9 +90,10 @@ Store AvgTmpSum
     // If AvgTmpSum - N is >= 0, increment AvgQ by 1
     Subt N
     Skipcond 000
+    Jump IncAvgQ
     Jump StoreAvgR // if AvgTmpSum - N is negative, store AvgTmpSum as the remainder
     // Store tmp sum
-    Store AvgTmpSum
+    IncAvgQ, Store AvgTmpSum
     // Increment AvgQ by 1
     Load AvgQ
     Add One
