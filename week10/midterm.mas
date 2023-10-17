@@ -1,7 +1,18 @@
 // Write a MARIE assembly program to do the following
-// The user input 10 numbers: 10 20 30 40 50 60 70 80 90 100
+// The user input 10 positive integers: 10 20 30 40 50 60 70 80 90 100
+// Program outputs the average, minimum, and maximum of the integers.
 
-// Run MainLoop 10 times
+// Input: 
+// This program processes 1 input at a time, calculating min / max / sum / avg of all seen inputs
+// After 10 inputs are processed, the program will halt.
+
+// Output:
+// Min
+// Max
+// Avg (Quotient)
+// Avg (Remainder)
+
+// Run MainLoop N (10) times
 MainLoop, Input
 Store CurrentInput
 // Keep track of the MIN value seen
@@ -22,12 +33,10 @@ Store Sum
 // Calculate running average based on Sum / N
 Jns CalcAvg
 
-// print Min, Max, Sum, AvgQ, AvgR
+// print Min, Max, AvgQ, AvgR
 Load Min
 Output
 Load Max
-Output
-Load Sum
 Output
 Load AvgQ
 Output
